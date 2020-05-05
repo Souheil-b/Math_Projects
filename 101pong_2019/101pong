@@ -1,0 +1,76 @@
+#!/usr/bin/env python3
+##
+## EPITECH PROJECT, 2019
+## Math
+## File description:
+## 101pong
+##
+
+import sys
+import math
+
+def help():
+    print ("USAGE :\n")
+    print("\t./101pong x0 y0 z0 x1 y1 z1 n")
+    print("DESCRIPTION\n")
+    print("\tx0  ball abscissa at time t - 1")
+    print("\ty0  ball ordinate at time t - 1")
+    print("\tz0  ball altitude at time t - 1")
+    print("\tx1  ball abscissa at time t")
+    print("\ty1  ball ordinate at time t")
+    print("\tz1  ball altitude at time t")
+    print("\tn   time shift (greater than or equal to zero, integer)")
+
+def main():
+    if len(sys.argv) != 8:
+        print ('Invalid Size !\n')
+        help()
+        sys.exit(84)
+    for i in range(1, len(sys.argv) - 2):
+        try:
+            float(sys.argv[i])
+        except:
+            print("{" + sys.argv[i] + "}" + " Oops!  That was no valid number.  Try again...")
+            sys.exit(84)
+        try:
+            val = int(sys.argv[7])
+            if val < 0:
+                val = int("ss")
+        except:
+            print("(" + sys.argv[7] + ")" + " Oops!  That was no valid number.  Try again...")
+            sys.exit(84)
+
+    x0 = float(sys.argv[1])
+    y0 = float(sys.argv[2])
+    z0 = float(sys.argv[3])
+    x1 = float(sys.argv[4])
+    y1 = float(sys.argv[5])
+    z1 = float(sys.argv[6])
+    n = int(sys.argv[7])
+
+    print('The velocity vector of the ball is:')
+    vx = x1 - x0
+    vy = y1 - y0
+    vz = z1 - z0
+    print(f'({vx:.2f}, {vy:.2f}, {vz:.2f})')
+
+    print(f'At time t + {n}, ball coordinates will be:')
+    tvx = (vx * n) + x1
+    tvy = (vy * n) + y1
+    tvz = (vz * n) + z1
+    print(f'({tvx:.2f}, {tvy:.2f}, {tvz:.2f})')
+
+    if (z1 > 0 and tvz < 0) or (z1 < 0 and tvz > 0):
+        opo = vz
+        adj = math.sqrt(vx**2 + vy**2)
+        if adj > 0:
+             alpha = math.atan(opo / adj) * ( 180 / math.pi)
+        if adj == 0:
+            sys.exit(84)
+        if alpha < 0:
+            alpha = -alpha
+        print('The incidence angle is:')
+        print(f'{alpha:.2f} degrees')
+    else:
+        print('The ball wont reach the paddle.')
+main()
