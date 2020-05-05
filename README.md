@@ -17,3 +17,6 @@
    3. the second derivative values for each given volume,
    4. an estimate of the second derivative values every 0.1 ml around the above closest point from theequivalence point, using linear interpolation,
    5. the proper equivalence point, estimated from the second derivative.
+   
+ # USAGE :
+    ./project -h
