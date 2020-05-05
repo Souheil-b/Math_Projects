@@ -1,0 +1,135 @@
+#!/usr/bin/env python3
+##
+## EPITECH PROJECT, 2019
+## 109titration
+## File description:
+## 109titration
+##
+
+from sys import exit, argv 
+import string
+from math import *
+
+def help():
+    print("USAGE\n\t./109titration file\n\n",end="")
+    print("DESCRIPTION\n\tfile\ta csv file containing \"vol;ph\" lines")
+    exit(0)
+
+def error():
+    f = 0
+    content = []
+    try:
+        with open(argv[1],'r') as f:
+            for line in f:
+                content.append(list(line.strip('\n').split(';')))
+    except:
+        print("Wrong File")
+        exit (84)
+    if (len(content) < 6):
+        print("Not enought values")
+        exit (84) 
+    check_file(content)
+    return (content)
+
+def check_file(content):
+    for i in range (len(content)):
+        if (len(content[i]) != 2):
+            print("Ph wrong, 2 arguments per line")
+            exit (84)
+    for i in range (len(content)):
+        if ((i - 1) >= 0 and content[i][0] == content[i - 1][0]):
+            print("Vol value wrong")
+            exit (84)
+
+def turn_to_flo(content):
+    for i in range(len(content)):
+        try:
+            ml = float (content[i][0])
+            ph =  float(content[i][1])
+        except:
+            print("Put valid numbers") 
+            exit (84)
+        content[i][0] = ml
+        content[i][1] = ph
+    for i in range(1, len(content) - 1):
+        if (content[i + 1][0] - content[i - 1][0] == 0):
+            print("MATH ERROR (division by zero)")
+            exit (84)
+    return (content)
+
+def derivative(content):
+    dph_list = []
+    print("Derivative:")
+    for i in range (1, len(content) - 1):
+        dph = ((content[i][1] - content[i - 1][1]) / (content[i][0] - content[i - 1][0])) * (content[i + 1][0] - content[i][0])
+        dph += ((content[i + 1][1] - content[i][1]) / (content[i + 1][0] - content[i][0])) * (content[i][0] - content[i - 1][0])
+        dph /= (content[i + 1][0] - content[i - 1][0])
+        dph_list.append(dph)
+        dph = round(dph, 2)
+        print(f'{content[i][0]:.1f} ml -> {dph:.2f}')
+    point = 0.0
+    for i in range (len(dph_list)):
+        if (dph_list[i] > point): 
+            point = content[i + 1][0]
+            tmp = i + 1
+    print(f'\nEquivalence point at {point:.1f} ml\n')
+    second(dph_list, content, tmp)
+
+def second(dph_list, content, tmp):
+    ddph_list = []
+    print("Second derivative:")
+    for i in range (1, len(dph_list) - 1):
+        ddph = ((dph_list[i] - dph_list[i - 1]) / (content[i + 1][0] - content[i][0])) * (content[i + 2][0] - content[i + 1][0])
+        ddph += ((dph_list[i + 1] - dph_list[i]) / (content[i + 2][0] - content[i + 1][0])) * (content[i + 1][0] - content[i][0])
+        ddph /= (content[i + 2][0] - content[i][0])
+        ddph_list.append(ddph)
+        print(f'{content[i + 1][0]:.1f} ml -> {ddph:.2f}')
+    second_estimat(ddph_list, content, tmp)
+
+def second_estimat(ddph_list, content, tmp):
+    print("\nSecond derivative estimated:")
+    sec_point = float(content[tmp][0])  #8ml  tmp = 7
+    start = round(float(content[tmp - 1][0]), 2)  #7.5ml
+    fir_res = ddph_list[tmp - 3]
+    sec_res = ddph_list[tmp - 2]
+    i = start
+    res = []
+    while (i < sec_point):
+        c_a = i - start
+        d_c = sec_point - i
+        d_a = sec_point - start
+        ph = fir_res * (d_c / d_a) + (sec_res * (c_a / d_a))
+        res.append(ph)
+        print(f'{i:.1f} ml -> {ph:.2f}')
+        i += 0.1
+    start = sec_point
+    sec_point = float(content[tmp + 1][0])
+    fir_res = sec_res
+    sec_res = ddph_list[tmp - 1]
+    while (i < sec_point):
+        c_a = i - start
+        d_c = sec_point - i
+        d_a = sec_point - start
+        ph = fir_res * (d_c / d_a) + (sec_res * (c_a / d_a))
+        res.append(ph)
+        print(f'{i:.1f} ml -> {ph:.2f}')
+        i += 0.1
+    for i in range (len(res)):
+        if (res[i] < 0):
+            j = round(float(content[tmp - 1][0]), 2) + (i * 0.1)
+            print("\n"f'Equivalence point at {j:.1f} ml')
+            break
+
+def main():
+    if len(argv) != 2: exit (84)
+    if '-h' in argv[1]:
+        help()
+        exit (0)
+    content = []
+    content = error()
+    content = turn_to_flo(content)
+    derivative(content)
+    
+if __name__ == '__main__':
+    main()
+    exit(0)
