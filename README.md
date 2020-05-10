@@ -5,7 +5,7 @@
 # Project :
 
   **101pong :**
-    The goal of this project is to work on a 3D version of this game (or of the Breakoutgame. . . ). Only one paddle will be considered, located in the(Oxy) plane (which is defined by the equationz= 0).
+    The goal of this project is to work on a 3D version of this game (or of the Breakoutgame. . . ). Only one paddle will be considered, located in the (Oxy) plane (which is defined by the equation z= 0).
   
   **109titration :**
    To find the concentration of preservative in the soda, the volume of added titrant at theequivalence point(ie at the middle of the pH-jump) must be read. There are two main approaches to do so: <br/>
